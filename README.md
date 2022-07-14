@@ -1,17 +1,10 @@
-# Garage-UI
+# Computer-UI
 
-### A Custom UI For A Garage Door Opener
+### A Custom UI (Or Two) For My Computer
 
 ## About Project
 
-After viewing the button on my family's garageAPI wall for enough years, I decided to finally do something about it. I 
-imagined a world where there was a central database for important information about family endeavors, where one could go
-for quick information at a glance, but also for more detailed info.
-
-Thus, the Garage-Pi was born.
-
-A Raspberry Pi runs this repo as an Electron app out of our garage. It of course has garage door controls, but it also 
-shows tide, weather, and surf data. The app is configured so that new data sources can be easily added at a later date.
+This repository contains the source code for some custom electron windows showcasing system stats on my computer. I have wired two displays up through motherboard power and run them off of the main graphics card. They are then mounted to my case. Reach out to me for more details on how you can set this up for your project.
 
 ## Installation
 
