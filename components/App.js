@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ipcRenderer } from "electron";
 
 import { CssBaseline } from "@mui/material";
 import { blue, green } from "@mui/material/colors";
@@ -16,6 +17,7 @@ import { DateTime } from "luxon";
 import DashBoard from "./Dashboard";
 
 const App = () => {
+	const [systemInformation, setSystemInformation] = useState({});
 	const [sunData, setSunData] = useState();
 
 	useEffect(() => {
@@ -32,8 +34,13 @@ const App = () => {
 		return () => clearInterval(interval);
 	}, []);
 
-	let mode = "light";
+	useEffect(() => {
+		ipcRenderer.on("send-system-info", (_, value) => {
+            setSystemInformation(value);
+        });
+	}, [])
 
+	let mode = "light";
 	if (sunData) {
 		const nowHour = DateTime.now().hour;
 		const sunsetHour = DateTime.fromISO(sunData.sunset).hour;
@@ -54,7 +61,7 @@ const App = () => {
 		<StyledEngineProvider injectFirst>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<DashBoard />
+				<DashBoard systemInformation={systemInformation} />
 			</ThemeProvider>
 		</StyledEngineProvider>
 	);

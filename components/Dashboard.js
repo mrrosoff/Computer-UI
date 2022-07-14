@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { Box, Paper } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
 
@@ -12,12 +12,21 @@ const useStyles = makeStyles((theme) => ({
 
 const DashBoard = (props) => {
     const classes = useStyles();
-
-	// window.electronAPI.sendSystemInfo((event, value) => {
-    //     console.log(value);
-    // });
-
-    return <Box height={"100%"} p={3}></Box>;
+    console.log(props.systemInformation);
+    return (
+        <Box height={"100%"} p={3}>
+            {Object.entries(props.systemInformation).map(([key, value]) => {
+                return (
+                    <Typography key={key}>
+                        {key}
+                        {Object.entries(value).map(([key, value]) => {
+                            return key;
+                        })}
+                    </Typography>
+                );
+            })}
+        </Box>
+    );
 };
 
 export default DashBoard;

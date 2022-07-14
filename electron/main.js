@@ -3,40 +3,9 @@ const path = require("path");
 
 const si = require("systeminformation");
 
-let smallWindow;
-let largeWindow;
+const windows = [];
 
-async function collectDataAndSendToRenderer(window) {
-    try {
-        const result = {
-            time: await si.time(),
-            system: await si.system(),
-            bios: await si.bios(),
-            motherboard: await si.baseboard(),
-            chassis: await si.chassis(),
-            cpu: await si.cpu(),
-            mem: await si.mem(),
-            graphics: await si.graphics(),
-            os: await si.osInfo(),
-            load: await si.currentLoad(),
-            fs: await si.fsSize(),
-            usb: await si.usb(),
-            audio: await si.audio(),
-            network: await si.networkInterfaces(),
-            wifi: await si.wifiNetworks(),
-            bluetooth: await si.bluetoothDevices()
-        };
-        window.webContents.send("send-system-info", result);
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-function createWindow() {
-    const displays = screen.getAllDisplays();
-    const smallDisplay = displays.find((display) => display.size.height === 480);
-    const largeDisplay = displays.find((display) => display.size.height === 600);
-
+const createWindows = () => {
     const options = {
         icon: path.join(__dirname, "../src/template/icon.png"),
         show: false,
@@ -45,60 +14,81 @@ function createWindow() {
         webPreferences: {
             enableRemoteModule: true,
             nodeIntegration: true,
-            contextIsolation: false,
-            // preload: path.join(__dirname, "preload.js")
+            contextIsolation: false
         }
     };
 
-    smallWindow = new BrowserWindow(options);
-    largeWindow = new BrowserWindow(options);
-
-    let indexPath = "http://localhost:3000";
-    if (process.env.NODE_ENV === "production") {
-        indexPath = "file://" + path.join(__dirname, "..", "dist", "index.html");
+    const numberOfDisplays = 2;
+    for (let i = 0; i < numberOfDisplays; i++) {
+        const window = new BrowserWindow(options);
+        let indexPath = "http://localhost:3000";
+        if (process.env.NODE_ENV === "production") {
+            indexPath = "file://" + path.join(__dirname, "..", "dist", "index.html");
+        }
+        setupWindow(window, i, indexPath);
+        windows.push(window);
     }
+};
 
-    smallWindow.loadURL(indexPath);
-    largeWindow.loadURL(indexPath);
-
+const setupWindow = (window, displayNumber, indexPath) => {
     const second = 1000;
-
-    smallWindow.once("ready-to-show", () => {
-        smallWindow.show();
+    window.loadURL(indexPath);
+    window.once("ready-to-show", () => {
+        window.show();
         setTimeout(() => {
-            smallWindow.setBounds(smallDisplay.workArea);
+            window.setBounds(displayFromDisplayNumber(displayNumber).workArea);
         }, second);
 
         setTimeout(() => {
-            smallWindow.setFullScreen(true);
+            window.setFullScreen(true);
         }, second * 2);
 
         setTimeout(() => {
-            collectDataAndSendToRenderer(smallWindow);
+            setInterval(() => collectDataAndSendToRenderer(window, displayNumber), second * 5);
         }, second * 3);
     });
-    largeWindow.once("ready-to-show", () => {
-        largeWindow.show();
-        setTimeout(() => {
-            largeWindow.setBounds(largeDisplay.workArea);
-        }, second);
+    window.on("closed", () => (window = null));
+};
 
-        setTimeout(() => {
-            largeWindow.setFullScreen(true);
-        }, second * 2);
+const displayFromDisplayNumber = (displayNumber) => {
+    const displays = screen.getAllDisplays();
+    return displays.find(
+        (display) => display.size.height === displayHeightFromDisplayNumber(displayNumber)
+    );
+};
 
-        setTimeout(() => {
-            collectDataAndSendToRenderer(largeWindow);
-        }, second * 3);
-    });
+const displayHeightFromDisplayNumber = (displayNumber) => {
+    switch (displayNumber) {
+        case 0:
+            return 480;
+        case 1:
+            return 600;
+        default:
+            throw new Error("Invalid display number");
+    }
+};
 
-    smallWindow.on("closed", () => (smallWindow = null));
-    largeWindow.on("closed", () => (largeWindow = null));
-}
+const collectDataAndSendToRenderer = async (window, displayNumber) => {
+    try {
+        const wantedInformation = {
+            time: "*",
+            motherboard: "manufacturer, model",
+            cpu: "manufacturer, brand, cores, socket",
+            cpuCurrentSpeed: "avg, min, max",
+            cpuTemperature: "main",
+            mem: "total, free, used",
+            graphics: "controllers, displays",
+            os: "distro, release, arch, ",
+            fs: "device, name, type",
+            wifiConnections: "ssid"
+        };
+        const data = await si.get(wantedInformation);
+        window.webContents.send("send-system-info", { ...data, displayNumber });
+    } catch (error) {}
+};
 
-app.on("ready", async () => createWindow());
-
+app.on("ready", async () => createWindows());
 app.on("window-all-closed", () => app.quit());
 app.on("activate", () => {
-    if (mainWindow === null) createWindow();
+    if (windows.length == 0) createWindows();
 });
