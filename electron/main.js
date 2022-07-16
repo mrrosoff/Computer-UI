@@ -2,6 +2,7 @@ const { app, screen, BrowserWindow } = require("electron");
 const path = require("path");
 
 const si = require("systeminformation");
+const wmi = require("node-wmi");
 
 const windows = [];
 
@@ -44,7 +45,7 @@ const setupWindow = (window, displayNumber, indexPath) => {
         }, second * 2);
 
         setTimeout(() => {
-            setInterval(() => collectDataAndSendToRenderer(window, displayNumber), second * 5);
+            setInterval(() => collectDataAndSendToRenderer(window, displayNumber), second);
         }, second * 3);
     });
     window.on("closed", () => (window = null));
@@ -69,22 +70,49 @@ const displayHeightFromDisplayNumber = (displayNumber) => {
 };
 
 const collectDataAndSendToRenderer = async (window, displayNumber) => {
+    const compileData = async (openHardwareData) => {
+        try {
+            window.webContents.send("send-system-info", {
+                ...(await getGeneralSystemInformation()),
+                memory: openHardwareData.Data,
+                load: openHardwareData.Load,
+                temperature: openHardwareData.Temperature,
+                displayNumber
+            });
+        } catch (error) {}
+    };
+    getTemperatureAndUsageData((openHardwareData) => compileData(openHardwareData));
+};
+
+const getGeneralSystemInformation = async () => {
     try {
         const wantedInformation = {
             time: "*",
             motherboard: "manufacturer, model",
             cpu: "manufacturer, brand, cores, socket",
-            cpuCurrentSpeed: "avg, min, max",
-            cpuTemperature: "main",
-            mem: "total, free, used",
             graphics: "controllers, displays",
-            os: "distro, release, arch, ",
-            fs: "device, name, type",
-            wifiConnections: "ssid"
+            osInfo: "distro, release, arch",
+            diskLayout: "device, name, type"
         };
-        const data = await si.get(wantedInformation);
-        window.webContents.send("send-system-info", { ...data, displayNumber });
+        return await si.get(wantedInformation);
     } catch (error) {}
+};
+
+const getTemperatureAndUsageData = (callback) => {
+    wmi.Query()
+        .namespace("root\\OpenHardwareMonitor")
+        .class("Sensor")
+        .exec((err, sensors) => {
+            const sortedByType = sensors.reduce((acc, curr) => {
+                if (curr.SensorType in acc) {
+                    acc[curr.SensorType].push(curr);
+                } else {
+                    acc[curr.SensorType] = [curr];
+                }
+                return acc;
+            }, {});
+            callback(sortedByType);
+        });
 };
 
 app.on("ready", async () => createWindows());

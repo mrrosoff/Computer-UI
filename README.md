@@ -13,3 +13,5 @@ Clone the repository and run the following command to build and run the app. Goo
 ```bash
 npm install && npm start
 ```
+
+Install Open HardWareMonitor

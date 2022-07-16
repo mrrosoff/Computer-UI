@@ -1,30 +1,46 @@
 import React from "react";
 
 import { Box, Typography } from "@mui/material";
-
-import makeStyles from "@mui/styles/makeStyles";
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        padding: theme.spacing(3)
-    }
-}));
+import { Cell, RadialBar, RadialBarChart, ResponsiveContainer } from "recharts";
 
 const DashBoard = (props) => {
-    const classes = useStyles();
-    console.log(props.systemInformation);
+    const data = [
+        {
+            value:
+                props.systemInformation?.temperature?.filter(
+                    (sensor) =>
+                        sensor.Identifier === "/amdcpu/0/temperature/0" &&
+                        sensor.Name === "CPU Package"
+                )[0].Value.toFixed(0) || 0,
+            totalPossible: 100
+        }
+    ];
+
+    console.log(data);
     return (
         <Box height={"100%"} p={3}>
-            {Object.entries(props.systemInformation).map(([key, value]) => {
-                return (
-                    <Typography key={key}>
-                        {key}
-                        {Object.entries(value).map(([key, value]) => {
-                            return key;
-                        })}
-                    </Typography>
-                );
-            })}
+            <Box width={200} height={200} style={{ position: "relative" }}>
+                <Box style={{ position: "absolute", top: 0, left: 0 }}>
+                    <RadialBarChart
+                        width={200}
+                        height={200}
+                        innerRadius="75%"
+                        outerRadius="100%"
+                        barSize={25}
+                        data={data}
+                    >
+                        <RadialBar background dataKey="value" />
+                        <RadialBar background dataKey="totalPossible">
+                            {data.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={"#FFFFFF"} />
+                            ))}
+                        </RadialBar>
+                    </RadialBarChart>
+                </Box>
+                <Box style={{ position: "absolute", top: "44%", left: "42%" }}>
+                    <Typography variant={"h4"}>{data[0].value}°</Typography>
+                </Box>
+            </Box>
         </Box>
     );
 };

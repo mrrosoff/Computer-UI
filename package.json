@@ -21,6 +21,7 @@
 		"axios": "^0.27.2",
 		"clsx": "latest",
 		"luxon": "^2.4.0",
+		"node-wmi": "^0.0.5",
 		"onoff": "^6.0.3",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
