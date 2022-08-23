@@ -1,14 +1,12 @@
-import React from "react";
-
 import { Box, Typography } from "@mui/material";
 import { Cell, RadialBar, RadialBarChart, ResponsiveContainer } from "recharts";
 
-const DashBoard = (props) => {
+const DashBoard = (props: { systemInformation: any; }) => {
     const data = [
         {
             value:
                 props.systemInformation?.temperature?.filter(
-                    (sensor) =>
+                    (sensor: { Identifier: string; Name: string; }) =>
                         sensor.Identifier === "/amdcpu/0/temperature/0" &&
                         sensor.Name === "CPU Package"
                 )[0].Value.toFixed(0) || 0,
