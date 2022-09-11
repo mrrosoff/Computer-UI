@@ -46,7 +46,7 @@ const App = () => {
         const getDisplayNumber = async () => {
             const data = await window.ipcAPI.getWindowNumber();
             setDisplayNumber(data);
-        }
+        };
         getDisplayNumber();
     }, []);
 

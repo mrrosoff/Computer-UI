@@ -14,7 +14,6 @@ const DashBoard = (props: { systemInformation: any; }) => {
         }
     ];
 
-    console.log(data);
     return (
         <Box height={"100%"} p={3}>
             <Box width={200} height={200} style={{ position: "relative" }}>

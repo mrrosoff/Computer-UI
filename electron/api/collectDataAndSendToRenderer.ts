@@ -1,7 +1,7 @@
 import { IpcMainInvokeEvent } from "electron";
 
 import si from "systeminformation";
-import wmi from "g";
+import WMI from "../wmi";
 
 const collectDataAndSendToRenderer = async (
     _event: IpcMainInvokeEvent,
@@ -11,34 +11,21 @@ const collectDataAndSendToRenderer = async (
         return undefined;
     }
 
-    const data = getTemperatureAndUsageData();
-    console.log(data);
+    const data = await getTemperatureAndUsageData();
     return {
         ...(await getGeneralSystemInformation()),
-        memory: data.Data,
-        load: data.Load,
-        temperature: data.Temperature,
+        memory: data.filter((item: any) => item.SensorType === "Data"),
+        load: data.filter((item: any) => item.SensorType === "Load"),
+        temperature: data.filter((item: any) => item.SensorType === "Temperature"),
         windowNumber
     };
 };
 
-const getTemperatureAndUsageData = () => {
-    let outerSortedByType;
-    wmi.Query()
-        .namespace("root\\OpenHardwareMonitor")
-        .class("Sensor")
-        .exec((_err, sensors) => {
-            const sortedByType = sensors.reduce((acc, curr) => {
-                if (curr.SensorType in acc) {
-                    acc[curr.SensorType].push(curr);
-                } else {
-                    acc[curr.SensorType] = [curr];
-                }
-                return acc;
-            }, {});
-            outerSortedByType = sortedByType;
-        });
-    return outerSortedByType;
+const getTemperatureAndUsageData = async () => {
+    const wmi = new WMI();
+    wmi.setNamespace("root\\OpenHardwareMonitor");
+    wmi.setClassName("Sensor");
+    return await wmi.exec();
 };
 
 const getGeneralSystemInformation = async () => {
