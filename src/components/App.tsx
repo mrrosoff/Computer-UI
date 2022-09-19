@@ -12,12 +12,13 @@ import {
 import { DateTime } from "luxon";
 
 import callExternalAPIOnInterval from "../hooks/callExternalAPIOnInterval";
-import DashBoard from "./Dashboard";
+import DisplayOne from "./displayOne/DisplayOne";
+import DisplayTwo from "./displayTwo/DisplayTwo";
 
 const App = () => {
-    const { VITE_TIME_INTERVAL, VITE_LATITUDE, VITE_LONGITUDE } = import.meta.env;
+    const { VITE_API_SYNC_TIME_INTERVAL, VITE_LATITUDE, VITE_LONGITUDE } = import.meta.env;
     const sunData = callExternalAPIOnInterval(
-        VITE_TIME_INTERVAL,
+        VITE_API_SYNC_TIME_INTERVAL,
         `https://api.sunrise-sunset.org/json?lat=${VITE_LATITUDE}&lng=${VITE_LONGITUDE}&formatted=0`
     );
 
@@ -40,8 +41,6 @@ const App = () => {
     );
 
     const [displayNumber, setDisplayNumber] = useState<number>();
-    const [systemInformation, setSystemInformation] = useState<any>();
-
     useEffect(() => {
         const getDisplayNumber = async () => {
             const data = await window.ipcAPI.getWindowNumber();
@@ -50,22 +49,12 @@ const App = () => {
         getDisplayNumber();
     }, []);
 
-    useEffect(() => {
-        const getSystemInformation = async () => {
-            const data = await window.ipcAPI.getSystemData(displayNumber);
-            setSystemInformation(data);
-        };
-
-        getSystemInformation();
-        const interval = setInterval(getSystemInformation, VITE_TIME_INTERVAL);
-        return () => clearInterval(interval);
-    }, [displayNumber]);
-
     return (
         <StyledEngineProvider injectFirst={true}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <DashBoard systemInformation={systemInformation} />
+                {displayNumber === 1 && <DisplayOne />}
+                {displayNumber === 2 && <DisplayTwo  />}
             </ThemeProvider>
         </StyledEngineProvider>
     );

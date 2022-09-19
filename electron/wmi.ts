@@ -106,14 +106,14 @@ class WMI {
         if (this.where) {
             if (typeof this.where === "string" && this.where.length) {
                 args.push("Where");
-                if (this.where.substr(0, 1) !== "(") {
+                if (this.where.substring(0, 1) !== "(") {
                     this.where = "(" + this.where + ")";
                 }
                 args.push(this.where);
             } else if (Array.isArray(this.where) && this.where.length) {
-                var str = "";
-                for (var i = 0; i < this.where.length; i++) {
-                    var tmp = this.where[i];
+                let str = "";
+                for (let i = 0; i < this.where.length; i++) {
+                    const tmp = this.where[i];
                     if (typeof tmp === "string") {
                         str += " And " + tmp;
                     } else if (typeof tmp === "object") {
@@ -140,87 +140,33 @@ class WMI {
     }
 
     extractProperty = function (prop) {
-        let name;
-        let type;
+        const dollarSeparated = "$" in prop;
+        const name = dollarSeparated ? prop.$.NAME : prop.NAME;
+        const type = dollarSeparated ? prop.$.TYPE : prop.TYPE;
+
         let value;
-
-        if ("$" in prop) {
-            name = prop.$.NAME;
-            type = prop.$.TYPE;
-        } else {
-            name = prop.NAME;
-            type = prop.TYPE;
-        }
-
         if ("VALUE" in prop) {
-            value = prop.VALUE;
-            if (Array.isArray(value)) {
-                value = value[0];
-            }
-            value = this.typeValue(value, type);
+            value = this.typeValue(Array.isArray(prop.VALUE) ? prop.VALUE[0] : prop.VALUE, type);
         } else if (
             "VALUE.ARRAY" in prop &&
             prop["VALUE.ARRAY"].length > 0 &&
             prop["VALUE.ARRAY"][0].VALUE
         ) {
-            value = [];
-            for (var i = 0; i < prop["VALUE.ARRAY"][0].VALUE.length; i++) {
-                value.push(this.typeValue(prop["VALUE.ARRAY"][0].VALUE[i], type));
-            }
+            value = prop["VALUE.ARRAY"][0].VALUE.map((value) => this.typeValue(value, type));
         }
 
-        return { name: name, type: type, value: value };
+        return { name, type, value };
     };
 
     typeValue = function (value, type) {
-        if (value !== undefined) {
-            const types = [
-                "uint64",
-                "uint32",
-                "uint16",
-                "uint8",
-                "sint64",
-                "sint32",
-                "sint16",
-                "sint8"
-            ];
-            if (types.indexOf(type) >= 0) {
-                value = parseInt(value);
-            } else if (["real64", "real32", "real16", "real8"].indexOf(type) !== -1) {
-                value = parseFloat(value);
-            } else if (type === "boolean") {
-                if (value === "TRUE") {
-                    value = true;
-                } else {
-                    value = false;
-                }
-            } else if (type === "datetime") {
-                var valueDate = new Date(value);
-                if (Object.prototype.toString.call(valueDate) === "[object Date]") {
-                    // it is a date
-                    if (valueDate.valueOf()) {
-                        // date is valid
-                        value = valueDate;
-                    } else {
-                        var formattedDate = value.match(
-                            /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})\.(\d{6})([-]\d{3})/
-                        );
-                        if (formattedDate) {
-                            value = new Date(
-                                Date.UTC(
-                                    formattedDate[1],
-                                    formattedDate[2] - 1,
-                                    formattedDate[3],
-                                    formattedDate[4] - parseInt(formattedDate[8]) / 100,
-                                    formattedDate[5],
-                                    formattedDate[6],
-                                    formattedDate[7]
-                                )
-                            );
-                        }
-                    }
-                }
-            }
+        if (type.includes("uint") || type.includes("sint")) {
+            return parseInt(value);
+        } else if (type.includes("real")) {
+            return parseFloat(value);
+        } else if (type === "boolean") {
+            return value === "TRUE";
+        } else if (type === "datetime") {
+            return new Date(value);
         }
         return value;
     };

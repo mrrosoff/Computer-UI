@@ -2,7 +2,8 @@ import { app, ipcMain, screen, BrowserWindow, IpcMainInvokeEvent } from "electro
 import path from "path";
 
 import getDisplayNumber from "./api/getWindowNumber";
-import collectDataAndSendToRenderer from "./api/collectDataAndSendToRenderer";
+import collectSystemInformation from "./api/collectSystemInformation";
+import collectLiveSystemData from "./api/collectLiveSystemData";
 
 interface WindowInformation {
     window: BrowserWindow;
@@ -12,7 +13,7 @@ interface WindowInformation {
 export const windows: WindowInformation[] = [];
 
 const createWindows = () => {
-    const options = {
+    const options: Electron.BrowserWindowConstructorOptions = {
         show: false,
         darkTheme: true,
         autoHideMenuBar: true,
@@ -26,12 +27,12 @@ const createWindows = () => {
     for (let i = 0; i < numberOfDisplays; i++) {
         const window = new BrowserWindow(options);
         const indexPath =
-            process.env.NODE_ENV === "production"
+            process.env.NODE_ENV?.trim() === "production"
                 ? `file://${path.join(__dirname, "..", "index.html")}`
                 : "http://localhost:3000";
 
         setupWindow(window, i, indexPath);
-        windows.push({ window, windowNumber: i });
+        windows.push({ window, windowNumber: i + 1 });
     }
 };
 
@@ -45,13 +46,15 @@ const setupWindow = (window, displayNumber, indexPath) => {
     window.loadURL(indexPath);
     window.once("ready-to-show", () => {
         window.show();
-        setTimeout(() => {
-            window.setBounds(displayFromDisplayNumber(displayNumber).workArea);
-        }, second);
 
-        setTimeout(() => {
-            window.setFullScreen(true);
-        }, second * 2);
+        if (process.env.NODE_ENV?.trim() === "production") {
+            setTimeout(() => {
+                window.setBounds(displayFromDisplayNumber(displayNumber).workArea);
+            }, second);
+            setTimeout(() => {
+                window.setFullScreen(true);
+            }, second * 2);
+        }
     });
     window.on("closed", () => (window = null));
 };
@@ -78,7 +81,8 @@ const displayHeightFromDisplayNumber = (displayNumber) => {
 
 app.on("ready", async () => {
     ipcMain.handle("getWindowNumber", getDisplayNumber);
-    ipcMain.handle("getSystemData", collectDataAndSendToRenderer);
+    ipcMain.handle("collectSystemInformation", collectSystemInformation);
+    ipcMain.handle("collectLiveSystemData", collectLiveSystemData);
     createWindows();
 });
 

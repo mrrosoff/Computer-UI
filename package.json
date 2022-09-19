@@ -6,7 +6,7 @@
     "scripts": {
         "start": "vite",
         "build": "vite build",
-        "garage": "npm run build && NODE_ENV=production electron ."
+        "app": "npm run build & SET NODE_ENV=production & electron ."
     },
     "author": "Max Rosoff",
     "license": "MIT",
