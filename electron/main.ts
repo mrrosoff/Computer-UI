@@ -17,6 +17,7 @@ const createWindows = () => {
         show: false,
         darkTheme: true,
         autoHideMenuBar: true,
+        skipTaskbar: true,
         webPreferences: {
             nodeIntegration: true,
             preload: path.join(__dirname, "preload.js")

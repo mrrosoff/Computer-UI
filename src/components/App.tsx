@@ -11,6 +11,7 @@ import {
 
 import { DateTime } from "luxon";
 
+import { SystemInformation } from "../../electron/api/collectSystemInformation";
 import callExternalAPIOnInterval from "../hooks/callExternalAPIOnInterval";
 import DisplayOne from "./displayOne/DisplayOne";
 import DisplayTwo from "./displayTwo/DisplayTwo";
@@ -41,20 +42,32 @@ const App = () => {
     );
 
     const [displayNumber, setDisplayNumber] = useState<number>();
+    const [systemInformation, setSystemInformation] = useState<SystemInformation>();
+
     useEffect(() => {
         const getDisplayNumber = async () => {
             const data = await window.ipcAPI.getWindowNumber();
             setDisplayNumber(data);
         };
+
         getDisplayNumber();
+    }, []);
+
+    useEffect(() => {
+        const collectSystemInformation = async () => {
+            const data = await window.ipcAPI.collectSystemInformation();
+            setSystemInformation(data);
+        };
+
+        collectSystemInformation();
     }, []);
 
     return (
         <StyledEngineProvider injectFirst={true}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                {displayNumber === 1 && <DisplayOne />}
-                {displayNumber === 2 && <DisplayTwo  />}
+                {displayNumber === 1 && <DisplayOne systemInformation={systemInformation} />}
+                {displayNumber === 2 && <DisplayTwo systemInformation={systemInformation} />}
             </ThemeProvider>
         </StyledEngineProvider>
     );
