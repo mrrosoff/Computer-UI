@@ -7,7 +7,8 @@ const collectLiveSystemData = async (_event: IpcMainInvokeEvent) => {
     return {
         memory: data.filter((item: any) => item.SensorType === "Data"),
         load: data.filter((item: any) => item.SensorType === "Load"),
-        temperature: data.filter((item: any) => item.SensorType === "Temperature")
+        temperature: data.filter((item: any) => item.SensorType === "Temperature"),
+        clock: data.filter((item: any) => item.SensorType === "Clock"),
     };
 };
 

@@ -7,15 +7,8 @@ import { SystemInformation } from "../../../electron/api/collectSystemInformatio
 
 const DashBoard = (props: { systemInformation: SystemInformation | undefined }) => {
     return (
-        <Box position={"relative"} height={"100%"} p={3}>
-            <Box position={"absolute"} top={20} right={20}>
-                <Typography variant={"h1"} fontWeight={400}>
-                    {DateTime.now().toLocaleString(DateTime.TIME_SIMPLE)}
-                </Typography>
-            </Box>
-            <Box display={"flex"} flexDirection={"column"} height={"100%"}>
-                
-            </Box>
+        <Box height={"100%"} p={3} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+            <Typography fontSize={100} fontWeight={500}>{DateTime.now().toLocaleString(DateTime.TIME_SIMPLE)}</Typography>
         </Box>
     );
 };

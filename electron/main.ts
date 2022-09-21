@@ -48,14 +48,14 @@ const setupWindow = (window, displayNumber, indexPath) => {
     window.once("ready-to-show", () => {
         window.show();
 
-         if (process.env.NODE_ENV?.trim() === "production") {
+        //  if (process.env.NODE_ENV?.trim() === "production") {
             setTimeout(() => {
                 window.setBounds(displayFromDisplayNumber(displayNumber).workArea);
             }, second);
             setTimeout(() => {
                 window.setFullScreen(true);
             }, second * 2);
-         }
+        //  }
     });
     window.on("closed", () => (window = null));
 };
