@@ -5,8 +5,8 @@ export {};
 interface ImportMetaEnv {
     readonly VITE_LATITUDE: number;
     readonly VITE_LONGITUDE: number;
-    readonly VITE_API_SYNC_TIME_INTERVAL: number;
     readonly VITE_SYSTEM_SYNC_TIME_INTERVAL: number;
+    readonly VITE_GAME_SYNC_TIME_INTERVAL: number;
 }
 
 interface ImportMeta {
@@ -19,6 +19,7 @@ declare global {
             getWindowNumber(): number;
             collectSystemInformation(): any;
             collectLiveSystemData(): any;
+            getCurrentlyPlayingGame(): any;
         };
     }
 }

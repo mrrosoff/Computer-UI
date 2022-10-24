@@ -1,9 +1,10 @@
-import { app, ipcMain, screen, BrowserWindow, IpcMainInvokeEvent } from "electron";
+import { app, ipcMain, screen, BrowserWindow } from "electron";
 import path from "path";
 
 import getDisplayNumber from "./api/getWindowNumber";
 import collectSystemInformation from "./api/collectSystemInformation";
 import collectLiveSystemData from "./api/collectLiveSystemData";
+import getCurrentlyPlayingGame from "./api/getCurrentlyPlayingGame";
 
 interface WindowInformation {
     window: BrowserWindow;
@@ -17,7 +18,7 @@ const createWindows = () => {
         show: false,
         darkTheme: true,
         autoHideMenuBar: true,
-        skipTaskbar: true,
+        skipTaskbar: process.env.NODE_ENV?.trim() === "production",
         webPreferences: {
             nodeIntegration: true,
             preload: path.join(__dirname, "preload.js")
@@ -48,14 +49,14 @@ const setupWindow = (window, displayNumber, indexPath) => {
     window.once("ready-to-show", () => {
         window.show();
 
-        //  if (process.env.NODE_ENV?.trim() === "production") {
+        //if (process.env.NODE_ENV?.trim() === "production") {
             setTimeout(() => {
                 window.setBounds(displayFromDisplayNumber(displayNumber).workArea);
             }, second);
             setTimeout(() => {
                 window.setFullScreen(true);
             }, second * 2);
-        //  }
+        //}
     });
     window.on("closed", () => (window = null));
 };
@@ -84,6 +85,7 @@ app.on("ready", async () => {
     ipcMain.handle("getWindowNumber", getDisplayNumber);
     ipcMain.handle("collectSystemInformation", collectSystemInformation);
     ipcMain.handle("collectLiveSystemData", collectLiveSystemData);
+    ipcMain.handle("getCurrentlyPlayingGame", getCurrentlyPlayingGame);
     createWindows();
 });
 
