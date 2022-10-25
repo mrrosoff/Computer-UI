@@ -94,7 +94,7 @@ const gameImageFromGameName = (gameName: string) => {
         return ValorantLogo;
     } else if (gameName.includes("League of Legends")) {
         return LeagueLogo;
-    } else if (gameName === "Overwatch2") {
+    } else if (gameName === "Overwatch 2") {
         return Overwatch2Logo;
     }
 };

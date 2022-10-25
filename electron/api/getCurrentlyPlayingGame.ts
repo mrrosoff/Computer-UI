@@ -11,7 +11,8 @@ export interface SystemInformation {
 const processNameToTitle = {
     "VALORANT-Win64-Shipping.exe": "Valorant",
     "League of Legends.exe": "League of Legends",
-    "LeagueClient.exe": "(Client) League of Legends"
+    "LeagueClient.exe": "(Client) League of Legends",
+    "Overwatch.exe": "Overwatch 2",
 };
 
 const getCurrentlyPlayingGame = async (_event: IpcMainInvokeEvent) => {
