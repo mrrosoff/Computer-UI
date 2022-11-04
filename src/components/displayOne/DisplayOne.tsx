@@ -13,7 +13,17 @@ import Overwatch2Logo from "../../assets/images/Overwatch_2_logo.png";
 const DashBoard = (props: { systemInformation: SystemInformation | undefined }) => {
     const { VITE_GAME_SYNC_TIME_INTERVAL } = import.meta.env;
 
+    const [time, setTime] = useState<string>(DateTime.now().toLocaleString(DateTime.TIME_SIMPLE));
     const [currentlyPlayingGame, setCurrentlyPlayingGame] = useState<any>();
+
+    useEffect(() => {
+        const oneMinute = 60 * 1000;
+        const timer = setInterval(
+            () => setTime(DateTime.now().toLocaleString(DateTime.TIME_SIMPLE)),
+            oneMinute
+        );
+        return () => clearInterval(timer);
+    }, []);
 
     useEffect(() => {
         const collectCurrentlyPlayingGame = async () => {
@@ -28,16 +38,22 @@ const DashBoard = (props: { systemInformation: SystemInformation | undefined }) 
 
     if (!currentlyPlayingGame) {
         return (
-            <Box
-                p={3}
-                display={"flex"}
-                height={"100%"}
-                justifyContent={"center"}
-                alignItems={"center"}
-            >
-                <Typography fontSize={150} fontWeight={400}>
-                    {new Date().toLocaleTimeString()}
-                </Typography>
+            <Box p={3} display={"flex"} flexDirection={"column"} height={"100%"}>
+                <Box display={"flex"} justifyContent={"space-between"}>
+                    <Typography fontSize={45} fontWeight={500}>
+                        {"Current Mood"}
+                    </Typography>
+                    <Box pl={3} pr={3}>
+                        <Typography fontSize={60} fontWeight={500}>
+                            {time}
+                        </Typography>
+                    </Box>
+                </Box>
+                <Box pt={2}>
+                    <Typography fontSize={80} fontWeight={400}>
+                        {"Hello Sir, how are you today?"}
+                    </Typography>
+                </Box>
             </Box>
         );
     }
@@ -51,8 +67,8 @@ const DashBoard = (props: { systemInformation: SystemInformation | undefined }) 
                         : "Currently Playing"}
                 </Typography>
                 <Box pl={3} pr={3}>
-                    <Typography fontSize={55} fontWeight={500}>
-                        {DateTime.now().toLocaleString(DateTime.TIME_SIMPLE)}
+                    <Typography fontSize={60} fontWeight={500}>
+                        {time}
                     </Typography>
                 </Box>
             </Box>
@@ -83,7 +99,9 @@ const GameStatus = (props: { gameImage?: any; gameName: string }) => {
                 />
             )}
             <Typography fontSize={85} fontWeight={500} sx={{ ml: 10 }}>
-                {props.gameName.includes("Client") ? props.gameName.substring(props.gameName.indexOf(")") + 1).trim() : props.gameName}
+                {props.gameName.includes("Client")
+                    ? props.gameName.substring(props.gameName.indexOf(")") + 1).trim()
+                    : props.gameName}
             </Typography>
         </Box>
     );
