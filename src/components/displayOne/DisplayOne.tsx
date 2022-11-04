@@ -36,7 +36,7 @@ const DashBoard = (props: { systemInformation: SystemInformation | undefined }) 
                 alignItems={"center"}
             >
                 <Typography fontSize={150} fontWeight={400}>
-                    {DateTime.now().toLocaleString(DateTime.TIME_SIMPLE)}
+                    {new Date().toLocaleTimeString()}
                 </Typography>
             </Box>
         );
