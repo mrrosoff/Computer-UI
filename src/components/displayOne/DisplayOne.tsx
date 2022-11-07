@@ -10,11 +10,8 @@ import ValorantLogo from "../../assets/images/valorant-logo-icon.png";
 import LeagueLogo from "../../assets/images/LoL_icon.png";
 import Overwatch2Logo from "../../assets/images/Overwatch_2_logo.png";
 
-const DashBoard = (props: { systemInformation: SystemInformation | undefined }) => {
-    const { VITE_GAME_SYNC_TIME_INTERVAL } = import.meta.env;
-
+const DashBoard = (props: { systemInformation: SystemInformation | undefined, currentlyPlayingGame: string | undefined }) => {
     const [time, setTime] = useState<string>(DateTime.now().toLocaleString(DateTime.TIME_SIMPLE));
-    const [currentlyPlayingGame, setCurrentlyPlayingGame] = useState<any>();
 
     useEffect(() => {
         const oneMinute = 60 * 1000;
@@ -25,18 +22,7 @@ const DashBoard = (props: { systemInformation: SystemInformation | undefined }) 
         return () => clearInterval(timer);
     }, []);
 
-    useEffect(() => {
-        const collectCurrentlyPlayingGame = async () => {
-            const data = await window.ipcAPI.getCurrentlyPlayingGame();
-            setCurrentlyPlayingGame(data);
-        };
-
-        collectCurrentlyPlayingGame();
-        const interval = setInterval(collectCurrentlyPlayingGame, VITE_GAME_SYNC_TIME_INTERVAL);
-        return () => clearInterval(interval);
-    }, []);
-
-    if (!currentlyPlayingGame) {
+    if (!props.currentlyPlayingGame) {
         return (
             <Box p={3} display={"flex"} flexDirection={"column"} height={"100%"}>
                 <Box display={"flex"} justifyContent={"space-between"}>
@@ -62,7 +48,7 @@ const DashBoard = (props: { systemInformation: SystemInformation | undefined }) 
         <Box p={3} display={"flex"} flexDirection={"column"} height={"100%"}>
             <Box display={"flex"} justifyContent={"space-between"}>
                 <Typography fontSize={45} fontWeight={500}>
-                    {currentlyPlayingGame.includes("Client")
+                    {props.currentlyPlayingGame.includes("Client")
                         ? "Getting Ready For"
                         : "Currently Playing"}
                 </Typography>
@@ -80,8 +66,8 @@ const DashBoard = (props: { systemInformation: SystemInformation | undefined }) 
                 alignItems={"center"}
             >
                 <GameStatus
-                    gameImage={gameImageFromGameName(currentlyPlayingGame)}
-                    gameName={currentlyPlayingGame}
+                    gameImage={gameImageFromGameName(props.currentlyPlayingGame)}
+                    gameName={props.currentlyPlayingGame}
                 />
             </Box>
         </Box>
