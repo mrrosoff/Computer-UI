@@ -5,12 +5,9 @@ import { Box, Typography } from "@mui/material";
 import { DateTime } from "luxon";
 
 import { SystemInformation } from "../../../electron/api/collectSystemInformation";
+import { Game } from "../../../games";
 
-import ValorantLogo from "../../assets/images/valorant-logo-icon.png";
-import LeagueLogo from "../../assets/images/LoL_icon.png";
-import Overwatch2Logo from "../../assets/images/Overwatch_2_logo.png";
-
-const DashBoard = (props: { systemInformation: SystemInformation | undefined, currentlyPlayingGame: string | undefined }) => {
+const DashBoard = (props: { systemInformation: SystemInformation | undefined, currentlyPlayingGame: Game | undefined }) => {
     const [time, setTime] = useState<string>(DateTime.now().toLocaleString(DateTime.TIME_SIMPLE));
 
     useEffect(() => {
@@ -48,7 +45,7 @@ const DashBoard = (props: { systemInformation: SystemInformation | undefined, cu
         <Box p={3} display={"flex"} flexDirection={"column"} height={"100%"}>
             <Box display={"flex"} justifyContent={"space-between"}>
                 <Typography fontSize={45} fontWeight={500}>
-                    {props.currentlyPlayingGame.includes("Client")
+                    {props.currentlyPlayingGame.name.includes("Client")
                         ? "Getting Ready For"
                         : "Currently Playing"}
                 </Typography>
@@ -66,8 +63,8 @@ const DashBoard = (props: { systemInformation: SystemInformation | undefined, cu
                 alignItems={"center"}
             >
                 <GameStatus
-                    gameImage={gameImageFromGameName(props.currentlyPlayingGame)}
-                    gameName={props.currentlyPlayingGame}
+                    gameImage={props.currentlyPlayingGame.icon}
+                    gameName={props.currentlyPlayingGame.name}
                 />
             </Box>
         </Box>
@@ -91,16 +88,6 @@ const GameStatus = (props: { gameImage?: any; gameName: string }) => {
             </Typography>
         </Box>
     );
-};
-
-const gameImageFromGameName = (gameName: string) => {
-    if (gameName === "Valorant") {
-        return ValorantLogo;
-    } else if (gameName.includes("League of Legends")) {
-        return LeagueLogo;
-    } else if (gameName === "Overwatch 2") {
-        return Overwatch2Logo;
-    }
 };
 
 export default DashBoard;

@@ -1,6 +1,8 @@
 import { IpcMainInvokeEvent } from "electron";
-
 import si from "systeminformation";
+
+import games from "../../games";
+import { updateLedsForGameName } from "../rgbController";
 
 export interface SystemInformation {
     processes: {
@@ -8,18 +10,13 @@ export interface SystemInformation {
     };
 }
 
-const processNameToTitle = {
-    "VALORANT-Win64-Shipping.exe": "Valorant",
-    "League of Legends.exe": "League of Legends",
-    "LeagueClient.exe": "(Client) League of Legends",
-    "Overwatch.exe": "Overwatch 2",
-};
-
 const getCurrentlyPlayingGame = async (_event: IpcMainInvokeEvent) => {
     const wantedInformation = { processes: "list" };
     const processList = (await si.get(wantedInformation)).processes.list;
-    const interestedProcess = Object.keys(processNameToTitle).find(processName => processList.map(process => process.name).includes(processName));
-    return interestedProcess && processNameToTitle[interestedProcess];
+    const processNameList = processList.map((process) => process.name);
+    const game = games.find((game) => processNameList.includes(game.application));
+    updateLedsForGameName(game);
+    return game;
 };
 
 export default getCurrentlyPlayingGame;

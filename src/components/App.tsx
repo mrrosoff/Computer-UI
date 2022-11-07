@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { CssBaseline } from "@mui/material";
-import { blue, green, orange, red } from "@mui/material/colors";
+import { blue, green } from "@mui/material/colors";
 import {
     createTheme,
     responsiveFontSizes,
@@ -9,6 +9,7 @@ import {
     StyledEngineProvider
 } from "@mui/material/styles";
 
+import { Game } from "../../games";
 import { SystemInformation } from "../../electron/api/collectSystemInformation";
 import DisplayOne from "./displayOne/DisplayOne";
 import DisplayTwo from "./displayTwo/DisplayTwo";
@@ -18,7 +19,7 @@ const App = () => {
 
     const [displayNumber, setDisplayNumber] = useState<number>();
     const [systemInformation, setSystemInformation] = useState<SystemInformation>();
-    const [currentlyPlayingGame, setCurrentlyPlayingGame] = useState<any>();
+    const [currentlyPlayingGame, setCurrentlyPlayingGame] = useState<Game>();
 
     useEffect(() => {
         const getDisplayNumber = async () => {
@@ -49,24 +50,13 @@ const App = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const primaryColorFromGame = (gameName: string) => {
-        if (gameName === "Valorant") {
-            return red[500];
-        } else if (gameName?.includes("League of Legends")) {
-            return green[500];
-        } else if (gameName === "Overwatch 2") {
-            return orange[500];
-        }
-        return blue[500];
-    };
-
     const theme = useMemo(
         () =>
             responsiveFontSizes(
                 createTheme({
                     palette: {
                         mode: "dark",
-                        primary: { main: primaryColorFromGame(currentlyPlayingGame) },
+                        primary: { main: currentlyPlayingGame?.color || blue[500] },
                         secondary: { main: green[500] }
                     }
                 })
