@@ -14,6 +14,7 @@ export const updateLedsForGameName = async (game: Game | undefined) => {
     for (let deviceId = 0; deviceId < controllerCount; deviceId++) {
         const controllerData = await client.getControllerData(deviceId);
         const gameColor = getColorForGameName(game);
+        await client.updateMode(deviceId, "Direct");
         await client.updateLeds(deviceId, Array(controllerData.colors.length).fill(gameColor));
     }
 };
