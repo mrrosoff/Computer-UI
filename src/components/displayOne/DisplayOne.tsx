@@ -7,34 +7,47 @@ import { DateTime } from "luxon";
 import { SystemInformation } from "../../../electron/api/collectSystemInformation";
 import { Game } from "../../../games";
 
-const DashBoard = (props: { systemInformation: SystemInformation | undefined, currentlyPlayingGame: Game | undefined }) => {
-    const [time, setTime] = useState<string>(DateTime.now().toLocaleString(DateTime.TIME_SIMPLE));
-
+const DisplayOne = (props: {
+    systemInformation: SystemInformation | undefined;
+    currentlyPlayingGame: Game | undefined;
+}) => {
+    const [time, setTime] = useState<DateTime>(DateTime.now());
+    
     useEffect(() => {
         const oneMinute = 60 * 1000;
-        const timer = setInterval(
-            () => setTime(DateTime.now().toLocaleString(DateTime.TIME_SIMPLE)),
-            oneMinute
-        );
+        const timer = setInterval(() => setTime(DateTime.now()), oneMinute);
         return () => clearInterval(timer);
     }, []);
+
+    const getTimeOfDayString = () => {
+        if (time.hour < 12) {
+            return "Morning";
+        } else if (time.hour < 8) {
+            return "Afternoon";
+        } else {
+            return "Evening";
+        }
+    }
+
+    const userName = props.systemInformation?.users[0].user;
+    const userFirstName = userName?.split(" ")[0]
 
     if (!props.currentlyPlayingGame) {
         return (
             <Box p={3} display={"flex"} flexDirection={"column"} height={"100%"}>
                 <Box display={"flex"} justifyContent={"space-between"}>
                     <Typography fontSize={45} fontWeight={500}>
-                        {"Current Mood"}
+                        {props.systemInformation?.osInfo.hostName}
                     </Typography>
                     <Box pl={3} pr={3}>
                         <Typography fontSize={60} fontWeight={500}>
-                            {time}
+                            {time.toLocaleString(DateTime.TIME_SIMPLE)}
                         </Typography>
                     </Box>
                 </Box>
-                <Box pt={2}>
-                    <Typography fontSize={80} fontWeight={400}>
-                        {"Hello Sir, how are you today?"}
+                <Box pt={8} flexGrow={1} display={"flex"} justifyContent={"center"}>
+                    <Typography align={"center"} fontSize={80} fontWeight={400}>
+                        {`Good ${getTimeOfDayString()} ${userFirstName || "sir"}`}
                     </Typography>
                 </Box>
             </Box>
@@ -51,7 +64,7 @@ const DashBoard = (props: { systemInformation: SystemInformation | undefined, cu
                 </Typography>
                 <Box pl={3} pr={3}>
                     <Typography fontSize={60} fontWeight={500}>
-                        {time}
+                        {time.toLocaleString(DateTime.TIME_SIMPLE)}
                     </Typography>
                 </Box>
             </Box>
@@ -90,4 +103,4 @@ const GameStatus = (props: { gameImage?: any; gameName: string }) => {
     );
 };
 
-export default DashBoard;
+export default DisplayOne;
