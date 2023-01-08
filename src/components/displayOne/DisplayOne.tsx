@@ -20,9 +20,9 @@ const DisplayOne = (props: {
     }, []);
 
     const getTimeOfDayString = () => {
-        if (time.hour < 12) {
+        if (time.hour > 5 && time.hour < 12) {
             return "Morning";
-        } else if (time.hour < 8) {
+        } else if (time.hour >= 12 && time.hour < 17) {
             return "Afternoon";
         } else {
             return "Evening";
@@ -45,7 +45,7 @@ const DisplayOne = (props: {
                         </Typography>
                     </Box>
                 </Box>
-                <Box pt={8} flexGrow={1} display={"flex"} justifyContent={"center"}>
+                <Box flexGrow={1} display={"flex"} justifyContent={"center"} alignItems={"center"}>
                     <Typography align={"center"} fontSize={80} fontWeight={400}>
                         {`Good ${getTimeOfDayString()} ${userFirstName || "sir"}`}
                     </Typography>
