@@ -8,13 +8,13 @@ import electron from "vite-plugin-electron";
 export default defineConfig({
     plugins: [
         electron({
-            main: {
-                entry: "electron/main.ts"
-            },
-            preload: {
-                input: "electron/preload.ts"
-            },
-            renderer: {}
+            entry: ["electron/main.ts", "electron/preload.ts"],
+            vite: {
+                build: {
+                    outDir: "dist/electron",
+                    
+                }
+            }
         }),
         react()
     ],
