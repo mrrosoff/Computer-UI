@@ -30,12 +30,12 @@ const DisplayTwo = (props: { systemInformation: SystemInformation | undefined })
     const cpuPackageTemperature =
         liveSystemData?.temperature
             ?.find((sensor: Sensor) => sensor.Name === "CPU Package")
-            .Value.toFixed(0) || "-";
+            ?.Value.toFixed(0) || "-";
 
     const cpuLoad =
         liveSystemData?.load
             ?.find((sensor: Sensor) => sensor.Name === "CPU Total")
-            .Value.toFixed(0) || 0;
+            ?.Value.toFixed(0) || 0;
 
     const cpuClockValues = liveSystemData?.clock
         ?.filter((sensor: Sensor) => sensor.Name.includes("CPU Core"))
@@ -51,29 +51,32 @@ const DisplayTwo = (props: { systemInformation: SystemInformation | undefined })
     const gpuPackageTemperature =
         liveSystemData?.temperature
             ?.find((sensor: Sensor) => sensor.Name === "GPU Core")
-            .Value.toFixed(0) || 0;
+            ?.Value.toFixed(0) || 0;
 
     const gpuLoad =
         liveSystemData?.load
-            ?.find((sensor: Sensor) => sensor.Name === "GPU Core")
-            .Value.toFixed(0) || 0;
+            ?.find((sensor: Sensor) => sensor.Name === "GPU Cq  ore")
+            ?.Value.toFixed(0) || 0;
 
     const gpuMemoryLoad =
         liveSystemData?.load
             ?.find((sensor: Sensor) => sensor.Name === "GPU Memory")
-            .Value.toFixed(0) || 0;
+            ?.Value.toFixed(0) || 0;
 
     const usedRam =
-        liveSystemData?.load?.find((sensor: Sensor) => sensor.Name === "Memory").Value.toFixed(0) ||
-        0;
+        liveSystemData?.load
+            ?.find((sensor: Sensor) => sensor.Name === "Memory")
+            ?.Value.toFixed(0) || 0;
 
     const usedDiskSpace = liveSystemData?.load
         ?.filter((sensor: Sensor) => sensor.Name === "Used Space")
+        .sort((a: { Value: number }, b: { Value: number }) => b.Value - a.Value)
         .map((sensor: any, index: number) => ({
             title: `Disk ${index + 1}`,
             value: sensor.Value.toFixed(0),
             unit: "%"
-        }));
+        }))
+        .slice(0, 2);   
 
     return (
         <Box height={"100%"} p={3} display={"flex"}>
@@ -172,7 +175,10 @@ const PrimaryCard = (props: CardProps) => {
                         <Box key={index} width={"100%"} mt={index ? 2 : 0}>
                             <LinearProgress
                                 variant="determinate"
-                                value={normalize(graph.value as number || 0, graph.maxValue || 100)}
+                                value={normalize(
+                                    (graph.value as number) || 0,
+                                    graph.maxValue || 100
+                                )}
                                 sx={{ height: 15, width: "100%" }}
                             />
                             <Box
