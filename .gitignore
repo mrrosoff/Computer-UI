@@ -1,22 +1,7 @@
-# Idea Files
-
-.idea
-
-# Node Files
-
 node_modules
-package-lock.json
-
-# Output Files
-
 build
 coverage
 dist
 lib
 out
 dist-electron
-
-# Server Files
-
-dependency-reduced-pom.xml
-target
