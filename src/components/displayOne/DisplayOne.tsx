@@ -29,9 +29,6 @@ const DisplayOne = (props: {
         }
     }
 
-    const userName = props.systemInformation?.users[0].user;
-    const userFirstName = userName?.split(" ")[0]
-
     if (!props.currentlyPlayingGame) {
         return (
             <Box p={3} display={"flex"} flexDirection={"column"} height={"100%"}>
@@ -47,7 +44,7 @@ const DisplayOne = (props: {
                 </Box>
                 <Box flexGrow={1} display={"flex"} justifyContent={"center"} alignItems={"center"}>
                     <Typography align={"center"} fontSize={80} fontWeight={400}>
-                        {`Good ${getTimeOfDayString()} ${userFirstName || "sir"}`}
+                        {`Good ${getTimeOfDayString()} Max`}
                     </Typography>
                 </Box>
             </Box>

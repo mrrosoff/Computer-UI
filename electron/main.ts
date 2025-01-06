@@ -5,7 +5,7 @@ import getDisplayNumber from "./api/getWindowNumber";
 import collectSystemInformation from "./api/collectSystemInformation";
 import collectLiveSystemData from "./api/collectLiveSystemData";
 import getCurrentlyPlayingGame from "./api/getCurrentlyPlayingGame";
-import { closeRGBController, startRGBController } from "./rgbController";
+import { closeRGBController } from "./rgbController";
 
 interface WindowInformation {
     window: BrowserWindow;
@@ -88,7 +88,6 @@ app.on("ready", async () => {
     ipcMain.handle("collectLiveSystemData", collectLiveSystemData);
     ipcMain.handle("getCurrentlyPlayingGame", getCurrentlyPlayingGame);
     createWindows();
-    startRGBController();
 });
 
 // For sunrise and sunset times API. No SSL Certificate error.
@@ -101,6 +100,5 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
     if (windows.length === 0) {
         createWindows();
-        startRGBController();
     }
 });

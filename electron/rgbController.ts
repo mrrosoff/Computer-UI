@@ -2,18 +2,22 @@ import { Client as RGBClient, utils } from "openrgb-sdk";
 
 import { Game } from "../games";
 
-let client;
-
-export const startRGBController = async () => {
-    client = new RGBClient("RGBController", 6742, "localhost");
-    await client.connect();
-};
+const client = new RGBClient("RGBController", 6742, "localhost");
 
 export const updateLedsForGameName = async (game: Game | undefined) => {
+    if (!client.isConnected) {
+        try {
+            await client.connect();
+        } catch (err: unknown) {
+            console.log("Waiting For OpenRGB...");
+        }
+    }
     const controllerCount = await client.getControllerCount();
     for (let deviceId = 0; deviceId < controllerCount; deviceId++) {
         const controllerData = await client.getControllerData(deviceId);
         const gameColor = getColorForGameName(game);
+
+        // @ts-ignore
         await client.updateMode(deviceId, "Direct");
         await client.updateLeds(deviceId, Array(controllerData.colors.length).fill(gameColor));
     }

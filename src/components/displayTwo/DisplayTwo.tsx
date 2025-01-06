@@ -55,7 +55,7 @@ const DisplayTwo = (props: { systemInformation: SystemInformation | undefined })
 
     const gpuLoad =
         liveSystemData?.load
-            ?.find((sensor: Sensor) => sensor.Name === "GPU Cq  ore")
+            ?.find((sensor: Sensor) => sensor.Name === "GPU Core")
             ?.Value.toFixed(0) || 0;
 
     const gpuMemoryLoad =

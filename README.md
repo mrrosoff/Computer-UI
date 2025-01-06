@@ -14,4 +14,8 @@ Clone the repository and run the following command to build and run the app. Goo
 npm install && npm start
 ```
 
-Install Open HardWareMonitor
+Install [Open Hardware Monitor](https://openhardwaremonitor.org/). Open Hardware Monitor outputs through the WMI protocol. This is currently picked up via the WMIC addon to Windows.
+In future versions of Windows this may be disabled, might need a workaround but for now you can add it via optional feature addons.
+
+Once setup, you can schedule the task via Task Scheduler. Mine is configured with the script `powershell.exe` and arguments `-WindowStyle hidden -File /path/to/file`.
+You may need to delay the task execution after login to allow graphics drivers and other high priority programs to start first.
