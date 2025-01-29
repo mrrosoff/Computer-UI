@@ -42,11 +42,14 @@ const DisplayTwo = (props: { systemInformation: SystemInformation | undefined })
         .map((sensor: Sensor) => sensor.Value);
 
     const averageCPUClock =
-        (
-            cpuClockValues?.reduce((a: number, b: number) => a + b) /
-            cpuClockValues?.length /
-            1000
-        )?.toFixed(2) || 0;
+        (cpuClockValues &&
+            cpuClockValues.length > 0 &&
+            (
+                cpuClockValues.reduce((a: number, b: number) => a + b) /
+                cpuClockValues.length /
+                1000
+            )?.toFixed(2)) ||
+        0;
 
     const gpuPackageTemperature =
         liveSystemData?.temperature
@@ -76,7 +79,7 @@ const DisplayTwo = (props: { systemInformation: SystemInformation | undefined })
             value: sensor.Value.toFixed(0),
             unit: "%"
         }))
-        .slice(0, 2);   
+        .slice(0, 2);
 
     return (
         <Box height={"100%"} p={3} display={"flex"}>
