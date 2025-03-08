@@ -13,10 +13,10 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
-        "@mui/icons-material": "^6.3.1",
-        "@mui/lab": "^6.0.0-beta.22",
-        "@mui/material": "^6.3.1",
-        "axios": "^1.7.9",
+        "@mui/icons-material": "^6.4.7",
+        "@mui/lab": "^6.0.0-beta.30",
+        "@mui/material": "^6.4.7",
+        "axios": "^1.8.2",
         "clsx": "latest",
         "dotenv": "^16.4.7",
         "luxon": "^3.5.0",
@@ -24,19 +24,19 @@
         "openrgb-sdk": "^0.5.2",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
-        "recharts": "^2.15.0",
-        "systeminformation": "^5.25.3"
+        "recharts": "^2.15.1",
+        "systeminformation": "^5.25.11"
     },
     "devDependencies": {
         "@types/luxon": "^3.4.2",
-        "@types/react": "^19.0.2",
-        "@types/react-dom": "^19.0.2",
+        "@types/react": "^19.0.10",
+        "@types/react-dom": "^19.0.4",
         "@vitejs/plugin-react": "^4.3.4",
-        "electron": "33.2.1",
+        "electron": "35.0.0",
         "electron-rebuild": "^3.2.9",
-        "sass": "^1.83.1",
-        "typescript": "^5.7.2",
-        "vite": "^6.0.7",
+        "sass": "^1.85.1",
+        "typescript": "^5.8.2",
+        "vite": "^6.2.1",
         "vite-plugin-electron": "^0.29.0"
     }
 }

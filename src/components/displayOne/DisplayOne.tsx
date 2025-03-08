@@ -12,7 +12,7 @@ const DisplayOne = (props: {
     currentlyPlayingGame: Game | undefined;
 }) => {
     const [time, setTime] = useState<DateTime>(DateTime.now());
-    
+
     useEffect(() => {
         const oneMinute = 60 * 1000;
         const timer = setInterval(() => setTime(DateTime.now()), oneMinute);
@@ -27,7 +27,7 @@ const DisplayOne = (props: {
         } else {
             return "Evening";
         }
-    }
+    };
 
     if (!props.currentlyPlayingGame) {
         return (
@@ -55,7 +55,7 @@ const DisplayOne = (props: {
         <Box p={3} display={"flex"} flexDirection={"column"} height={"100%"}>
             <Box display={"flex"} justifyContent={"space-between"}>
                 <Typography fontSize={45} fontWeight={500}>
-                    {props.currentlyPlayingGame.name.includes("Client")
+                    {props.currentlyPlayingGame.type === "client"
                         ? "Getting Ready For"
                         : "Currently Playing"}
                 </Typography>
@@ -66,7 +66,7 @@ const DisplayOne = (props: {
                 </Box>
             </Box>
             <Box
-                p={5}
+                p={props.currentlyPlayingGame.name ? 5 : 0}
                 flexGrow={1}
                 display={"flex"}
                 justifyContent={"center"}
@@ -81,21 +81,29 @@ const DisplayOne = (props: {
     );
 };
 
-const GameStatus = (props: { gameImage?: any; gameName: string }) => {
+const GameStatus = (props: { gameImage?: any; gameName: string | undefined }) => {
+    const image = new Image();
+    image.src = props.gameImage;
     return (
         <Box display={"flex"} alignItems={"center"}>
             {props.gameImage && (
                 <img
                     src={props.gameImage}
                     alt="Game Logo"
-                    style={{ width: 180, height: 180, objectFit: "cover", border: "none" }}
+                    style={{
+                        height: props.gameName ? Math.min(image.width / 8, 140) : 200,
+                        objectFit: "cover",
+                        border: "none"
+                    }}
                 />
             )}
-            <Typography fontSize={85} fontWeight={500} sx={{ ml: 10 }}>
-                {props.gameName.includes("Client")
-                    ? props.gameName.substring(props.gameName.indexOf(")") + 1).trim()
-                    : props.gameName}
-            </Typography>
+            {props.gameName && (
+                <Typography fontSize={85} fontWeight={500} sx={{ ml: 8 }}>
+                    {props.gameName.includes("Client")
+                        ? props.gameName.substring(props.gameName.indexOf(")") + 1).trim()
+                        : props.gameName}
+                </Typography>
+            )}
         </Box>
     );
 };

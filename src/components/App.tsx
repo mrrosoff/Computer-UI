@@ -56,7 +56,7 @@ const App = () => {
                 createTheme({
                     palette: {
                         mode: "dark",
-                        primary: { main: currentlyPlayingGame?.color || blue[500] },
+                        primary: { main: currentlyPlayingGame?.primaryColor || blue[500] },
                         secondary: { main: green[500] }
                     }
                 })
