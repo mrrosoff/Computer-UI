@@ -1,6 +1,7 @@
 import ValorantLogo from "./src/assets/images/valorant-logo-icon.png";
 import LeagueLogo from "./src/assets/images/LoL_icon.png";
 import Overwatch2Logo from "./src/assets/images/Overwatch_2_logo.png";
+import MarvelRivalsLogo from "./src/assets/images/marvel_rivals.png";
 
 export interface Game {
     name: string;
@@ -33,6 +34,12 @@ const games: Game[] = [
         application: "Overwatch.exe",
         color: "#DF550F",
         icon: Overwatch2Logo
+    },
+    {
+        name: "Marvel Rivals",
+        application: "Marvel-Win64-Shipping.exe",
+        color: "#9BC063",
+        icon: MarvelRivalsLogo
     }
 ];
 
