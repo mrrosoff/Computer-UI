@@ -82,8 +82,6 @@ const DisplayOne = (props: {
 };
 
 const GameStatus = (props: { gameImage?: any; gameName: string | undefined }) => {
-    const image = new Image();
-    image.src = props.gameImage;
     return (
         <Box display={"flex"} alignItems={"center"}>
             {props.gameImage && (
@@ -91,7 +89,7 @@ const GameStatus = (props: { gameImage?: any; gameName: string | undefined }) =>
                     src={props.gameImage}
                     alt="Game Logo"
                     style={{
-                        height: props.gameName ? Math.min(image.width / 8, 140) : 200,
+                        height: props.gameName ? 150 : 200,
                         objectFit: "cover",
                         border: "none"
                     }}

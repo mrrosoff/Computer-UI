@@ -22,13 +22,13 @@ const games: Game[] = [
         icon: ValorantLogo
     },
     {
-        application: "League Of Legends.exe",
+        application: "League of Legends.exe",
         primaryColor: "#C89B3C",
         secondaryColor: "#1688FF",
         icon: LeagueLogo
     },
     {
-        application: "LeagueClient.exe",
+        application: "LeagueClientUx.exe",
         type: "client",
         primaryColor: "#C89B3C",
         secondaryColor: "#1688FF",
