@@ -42,7 +42,6 @@ const games: Game[] = [
         icon: Overwatch2Logo
     },
     {
-        name: "Marvel Rivals",
         application: "Marvel-Win64-Shipping.exe",
         primaryColor: "#70964B",
         secondaryColor: "#5C2062",
